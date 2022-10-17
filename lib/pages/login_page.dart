@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future verifyUser() async {
-    final uri = Uri.parse('http://192.168.254.143:80/api/verifyUser.php');
+    final uri = Uri.parse('http://192.168.254.120:80/api/verifyUser.php');
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {'email': user.text, 'password': pass.text};
     // String jsonBody = json.encode(body);

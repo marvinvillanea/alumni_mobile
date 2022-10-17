@@ -1,6 +1,8 @@
-
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:http/http.dart' as http;
 import 'package:spc_almuni/common/theme_helper.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import 'profile_page.dart';
 import 'forgot_password_verification_page.dart';
+
 class RegistrationPage extends  StatefulWidget{
   @override
   State<StatefulWidget> createState() {
@@ -20,6 +23,14 @@ class _RegistrationPageState extends State<RegistrationPage>{
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
   bool checkboxValue = false;
+
+  TextEditingController first_name = TextEditingController();
+  TextEditingController last_name = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController mobile_number = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController sy = TextEditingController();
+  TextEditingController course = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +91,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 30,),
                         Container(
                           child: TextFormField(
+                            controller: first_name,
                             decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -87,6 +99,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 30,),
                         Container(
                           child: TextFormField(
+                            controller: last_name,
                             decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -94,6 +107,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 20.0),
                         Container(
                           child: TextFormField(
+                            controller: email,
                             decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),
                             keyboardType: TextInputType.emailAddress,
                             validator: (val) {
@@ -108,6 +122,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 20.0),
                         Container(
                           child: TextFormField(
+                            controller: mobile_number,
                             decoration: ThemeHelper().textInputDecoration(
                                 "Mobile Number",
                                 "Enter your mobile number"),
@@ -124,6 +139,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 20.0),
                         Container(
                           child: TextFormField(
+                            controller: password,
                             obscureText: true,
                             decoration: ThemeHelper().textInputDecoration(
                                 "Password*", "Enter your password"),
@@ -139,6 +155,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 30,),
                         Container(
                           child: TextFormField(
+                            controller: sy,
                             decoration: ThemeHelper().textInputDecoration('School Year', 'Enter School Year'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -146,6 +163,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         const SizedBox(height: 30,),
                         Container(
                           child: TextFormField(
+                            controller: course,
                             decoration: ThemeHelper().textInputDecoration('Course', 'Enter Your Course'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -204,13 +222,18 @@ class _RegistrationPageState extends State<RegistrationPage>{
                               ),
                             ),
                             onPressed: () {
+                              print('Response body: afdsafdsfdsa');
                               if (_formKey.currentState!.validate()) {
-                                Navigator.of(context).pushAndRemoveUntil(
+                                RegistrationUser();
+                                /*Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) => ForgotPasswordVerificationPage()
                                     ),
                                         (Route<dynamic> route) => false
-                                );
+                                );*/
+                              } else {
+                                print('Response body: afdsafdsfdsa');
+                                RegistrationUser();
                               }
                             },
                           ),
@@ -226,6 +249,44 @@ class _RegistrationPageState extends State<RegistrationPage>{
         ),
       ),
     );
+  }
+
+  Future RegistrationUser() async {
+    final uri = Uri.parse('http://192.168.254.120:80/api/registration_user.php');
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      'first_name': first_name.text,
+      'last_name': last_name.text,
+      'email' : email.text,
+      'mobile_number' : mobile_number.text,
+      'password' : password.text,
+      'sy' : sy.text,
+      'course' : course.text,
+    };
+    // String jsonBody = json.encode(body);
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print('Response body: ${responseBody}');
+    if (responseBody == "SUCCESS") {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      print('Response body: ${responseBody}');
+    } else if (responseBody == "NOT_VERIFY") {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ForgotPasswordVerificationPage()));
+      print('Response body: ${responseBody}');
+    } else {
+      print('Response body: ${responseBody}');
+    }
   }
 
 }
