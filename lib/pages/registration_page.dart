@@ -252,7 +252,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
   }
 
   Future RegistrationUser() async {
-    final uri = Uri.parse('http://192.168.254.120:80/api/registration_user.php');
+    final uri = Uri.parse('http://192.168.1.169:80/api/registration_user.php');
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {
       'first_name': first_name.text,
