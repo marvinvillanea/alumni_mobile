@@ -16,7 +16,7 @@ class ForgotPasswordVerificationPage extends StatefulWidget {
 
 class _ForgotPasswordVerificationPageState extends State<ForgotPasswordVerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _pinSuccess = false;
+  //bool _pinSuccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,4 +76,7 @@ class _ForgotPasswordVerificationPageState extends State<ForgotPasswordVerificat
         )
     );
   }
+
+
+
 }
