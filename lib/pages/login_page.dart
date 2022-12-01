@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:spc_almuni/common/theme_helper.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 /*import 'forgot_password_page.dart';
 
@@ -151,8 +152,11 @@ class _LoginPageState extends State<LoginPage>{
     );
 
     int statusCode = response.statusCode;
-    String responseBody = response.body;
-    if(responseBody == "SUCCESS"){
+    var responseBody = response.body;
+    var jsonData = json.decode(responseBody);
+    print('Response body: ${responseBody}');
+    if(jsonData["code"] == "200"){
+      await FlutterSession().set('token', jsonData["token"]);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage() ));
     } else if(responseBody == "NOT_VERIFY") {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPasswordVerificationPage() ));
