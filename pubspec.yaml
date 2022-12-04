@@ -39,6 +39,7 @@ dependencies:
   otp_text_field: ^1.1.1
   http: ^0.13.5
   fluttertoast: ^8.0.9
+  flutter_session_manager: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
-
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:spc_almuni/common/theme_helper.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 import 'profile_page.dart';
 import 'forgot_password_verification_page.dart';
+
 class RegistrationPage extends  StatefulWidget{
   @override
   State<StatefulWidget> createState() {
@@ -21,6 +23,78 @@ class _RegistrationPageState extends State<RegistrationPage>{
   bool checkedValue = false;
   bool checkboxValue = false;
 
+  String sy_id = '';
+  String course_id = '';
+
+  var syList = [];
+  var courseList =[];
+
+  var endpoint_sy = 'http://192.168.254.136:80/api/sy.php';
+  var endpoint_course = 'http://192.168.254.136:80/api/getcourse.php';
+  var endpoint_register = 'http://192.168.254.136:80/api/registration_user.php';
+
+  Future getAllSy()async{
+    final uri = Uri.parse(endpoint_sy);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {};
+    // String jsonBody = json.encode(body);
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    var responseBody = response.body;
+    var jsonData = json.decode(responseBody);
+    var details = jsonData['details'];
+    print(details);
+    /*for (var k in details.values ) {
+      syList.add(k);  //adding each value to the list
+    }*/
+    setState(() {
+      syList = jsonData['details'];
+    });
+    print(jsonData);
+    print(syList);
+
+  }
+
+  Future getAllCourse()async{
+    final uri = Uri.parse(endpoint_course);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {};
+    // String jsonBody = json.encode(body);
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    var responseBody = response.body;
+    var jsonData = json.decode(responseBody);
+    var details = jsonData['details'];
+    print(details);
+    setState(() {
+      courseList = jsonData['details'];
+    });
+    print(jsonData);
+    print(courseList);
+  }
+
+  TextEditingController firstname = TextEditingController();
+  TextEditingController lastname = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController mobile = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController sy = TextEditingController();
+  TextEditingController course = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    getAllSy();
+    getAllCourse();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +127,10 @@ class _RegistrationPageState extends State<RegistrationPage>{
                                       width: 5, color: Colors.white),
                                   color: Colors.white,
                                   boxShadow: [
-                                    BoxShadow(
+                                    const BoxShadow(
                                       color: Colors.black12,
                                       blurRadius: 20,
-                                      offset: Offset(5, 5),
+                                      offset: const Offset(5, 5),
                                     ),
                                   ],
                                 ),
@@ -81,6 +155,13 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         Container(
                           child: TextFormField(
                             decoration: ThemeHelper().textInputDecoration('First Name', 'Enter your first name'),
+                            controller: firstname,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Please enter first name";
+                              }
+                              return null;
+                            },
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
@@ -88,6 +169,13 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         Container(
                           child: TextFormField(
                             decoration: ThemeHelper().textInputDecoration('Last Name', 'Enter your last name'),
+                            controller: lastname,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Please enter last name";
+                              }
+                              return null;
+                            },
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
@@ -95,9 +183,10 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         Container(
                           child: TextFormField(
                             decoration: ThemeHelper().textInputDecoration("E-mail address", "Enter your email"),
+                            controller: email,
                             keyboardType: TextInputType.emailAddress,
                             validator: (val) {
-                              if(!(val!.isEmpty) && !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$").hasMatch(val)){
+                              if((val!.isEmpty) || !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$").hasMatch(val)){
                                 return "Enter a valid email address";
                               }
                               return null;
@@ -112,8 +201,9 @@ class _RegistrationPageState extends State<RegistrationPage>{
                                 "Mobile Number",
                                 "Enter your mobile number"),
                             keyboardType: TextInputType.phone,
+                            controller: mobile,
                             validator: (val) {
-                              if(!(val!.isEmpty) && !RegExp(r"^(\d+)*$").hasMatch(val)){
+                              if((val!.isEmpty) || !RegExp(r"^(\d+)*$").hasMatch(val)){
                                 return "Enter a valid phone number";
                               }
                               return null;
@@ -127,9 +217,12 @@ class _RegistrationPageState extends State<RegistrationPage>{
                             obscureText: true,
                             decoration: ThemeHelper().textInputDecoration(
                                 "Password*", "Enter your password"),
+                            controller: password,
                             validator: (val) {
                               if (val!.isEmpty) {
                                 return "Please enter your password";
+                              } else if(val.length < 6){
+                                return "Character most be more than 6 characters";
                               }
                               return null;
                             },
@@ -138,17 +231,71 @@ class _RegistrationPageState extends State<RegistrationPage>{
                         ),
                         const SizedBox(height: 30,),
                         Container(
-                          child: TextFormField(
-                            decoration: ThemeHelper().textInputDecoration('School Year', 'Enter School Year'),
-                          ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            child: SizedBox(
+                              child:  DropdownButtonFormField<String>(
+                                decoration: ThemeHelper().textInputDecoration('Course'),
+                                value:  course_id.isNotEmpty ? course_id : null,
+                                hint: Text('Select Course'),
+                                isExpanded: true,
+                                icon: const Icon(Icons.arrow_downward),
+                                elevation: 30,
+                                style: const TextStyle(color: Colors.black),
+                                onChanged:  (value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    course_id = value!;
+                                    print(value);
+                                  });
+                                },
+                                items: courseList.map((value) {
+                                  return DropdownMenuItem(
+                                    value: value['id'].toString(),
+                                    child: Text(value['code'] + ' - ' + value['descriptions'] ),
+
+                                  );
+                                },).toList(),
+                                validator: (value) {
+                                  if((value!.isEmpty)){
+                                    return "Enter course";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            )
                         ),
                         const SizedBox(height: 30,),
                         Container(
-                          child: TextFormField(
-                            decoration: ThemeHelper().textInputDecoration('Course', 'Enter Your Course'),
-                          ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            child: SizedBox(
+                              child:  DropdownButtonFormField<String>(
+                                decoration: ThemeHelper().textInputDecoration('School Year'),
+                                value:  sy_id.isNotEmpty ? sy_id : null,
+                                hint: Text('Select School Year'),
+                                isExpanded: true,
+                                icon: const Icon(Icons.arrow_downward),
+                                elevation: 30,
+                                style: const TextStyle(color: Colors.black),
+                                onChanged:  (value) {
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    sy_id = value!;
+                                    print(value);
+                                  });
+                                },
+                                items: syList.map((value) {
+                                  return DropdownMenuItem(
+                                    value: value['sy_id'].toString(),
+                                    child: Text(value['sy']),
+
+                                  );
+                                },).toList(),
+                                validator: (value) {
+                                  if((value!.isEmpty)){
+                                    return "Enter a school year";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            )
                         ),
                         const SizedBox(height: 15.0),
                         FormField<bool>(
@@ -205,12 +352,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) => ForgotPasswordVerificationPage()
-                                    ),
-                                        (Route<dynamic> route) => false
-                                );
+                                registerUser(sy_id,course_id);
                               }
                             },
                           ),
@@ -226,6 +368,36 @@ class _RegistrationPageState extends State<RegistrationPage>{
         ),
       ),
     );
+  }
+
+  Future registerUser(sy_id,course_id)async{
+    final uri = Uri.parse(endpoint_register);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      'first_name' : firstname.text,
+      'last_name' : lastname.text,
+      'mobile' : mobile.text,
+      'email': email.text,
+      'password': password.text,
+      'sy' : sy_id,
+      'course' : course_id,
+    };
+    // String jsonBody = json.encode(body);
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    String responseBody = response.body;
+    if(responseBody == "SUCCESS"){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd') ));
+    } else if(responseBody == "NOT_VERIFY") {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ForgotPasswordVerificationPage() ));
+    }
+    else {
+      print('Response body: ${responseBody}');
+    }
   }
 
 }

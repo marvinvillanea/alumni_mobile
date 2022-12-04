@@ -9,9 +9,9 @@ import 'package:spc_almuni/pages/splash_screen.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 // import 'package:spc_almuni/response/UsersProfile.dart';
 
-// import 'forgot_password_page.dart';
-// import 'forgot_password_verification_page.dart';
-import 'view_joblist.dart';
+/*import 'forgot_password_page.dart';
+import 'forgot_password_verification_page.dart';
+import 'registration_page.dart';*/
 
 class ProfilePage extends StatefulWidget{
 
@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage>{
                 title: Text('Job list', style: TextStyle(fontSize: _drawerFontSize, color: Theme.of(context).accentColor),
                 ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  ViewJobList( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd') ),);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ),);
                 },
               ),
               Divider(color: Theme.of(context).primaryColor, height: 1,),
