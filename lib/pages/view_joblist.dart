@@ -187,7 +187,22 @@ class _ViewJobListState extends State<ViewJobList> {
                                        // IconText(Icons.access_alarm_outlined, jobDetails[index]['job_tittle'].toString()),
                                      ],
                                    ),
-                                   SizedBox(height: 30),
+                                   SizedBox(height: 20),
+                                   Text(
+                                     'Salary Range Expected',
+                                     style: TextStyle(
+                                         fontWeight: FontWeight.bold
+                                     ),
+                                   ),
+                                   SizedBox(height: 10),
+                                   Text(
+                                     jobDetails[index]['min_salary'].toString() + ' - ' +jobDetails[index]['max_salary'].toString(),
+                                     style: TextStyle(
+                                       fontSize: 14,
+
+                                     ),
+                                   ),
+                                   SizedBox(height: 10),
                                    Text(
                                      'Requirement',
                                      style: TextStyle(

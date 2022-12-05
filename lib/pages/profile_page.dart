@@ -4,18 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:spc_almuni/pages/login_page.dart';
 import 'package:spc_almuni/pages/splash_screen.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
-// import 'package:spc_almuni/response/UsersProfile.dart';
 
-// import 'forgot_password_page.dart';
-// import 'forgot_password_verification_page.dart';
 import 'view_joblist.dart';
+import 'view_event.dart';
 
 class ProfilePage extends StatefulWidget{
 
-  ProfilePage(this.token, this.account_email, this.account_fullname, this.account_phone_no, this.user_id,this.course);
+  ProfilePage(this.token, this.account_email, this.account_fullname, this.account_phone_no, this.user_id,this.course, this.image);
 
   final String token;
   final String account_email;
@@ -23,6 +20,7 @@ class ProfilePage extends StatefulWidget{
   final String account_phone_no;
   final String user_id;
   final String course;
+  final String image;
 
 
   @override
@@ -43,11 +41,13 @@ class _ProfilePageState extends State<ProfilePage>{
   var accountUserID;
   var token ;
   var accountCourse;
+  var accountImage;
 
   //LIST JOB API
   List<dynamic> jobDetails = [];
+  List<dynamic> eventDetails = [];
   var jobListURL = 'http://192.168.254.136:80/api/getJobDetails.php';
-
+  var eventListURL = 'http://192.168.254.136:80/api/getEvents.php';
   Future setDetaProfile() async {
     setState(() {
       accountEmail = widget.account_email;
@@ -56,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage>{
       token = widget.token;
       accountUserID = widget.user_id;
       accountCourse = widget.course;
+      accountImage = widget.image;
     });
   }
 
@@ -143,8 +144,17 @@ class _ProfilePageState extends State<ProfilePage>{
                 title: Text('Home Screen', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
                 onTap: (){
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ));
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd') ));
-                },
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) =>
+                          ProfilePage(
+                              token,
+                              accountEmail,
+                              accountFullname,
+                              accountConctactNo,accountUserID,
+                              accountCourse,
+                              accountImage) ));
+                  },
               ),
               ListTile(
                 leading: Icon(Icons.screen_lock_landscape_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
@@ -159,9 +169,10 @@ class _ProfilePageState extends State<ProfilePage>{
               Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
                 leading: Icon(Icons.person_add_alt_1, size: _drawerIconSize,color: Theme.of(context).accentColor),
-                title: Text('Announcement',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                title: Text('Events',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
+                  getEventList();
+                 // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
                 },
               ),
               Divider(color: Theme.of(context).primaryColor, height: 1,),
@@ -203,16 +214,18 @@ class _ProfilePageState extends State<ProfilePage>{
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    // padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
+                      // borderRadius: BorderRadius.circular(50),
                       border: Border.all(width: 5, color: Colors.white),
                       color: Colors.white,
                       boxShadow: const [
                         BoxShadow(color: Colors.black12, blurRadius: 20, offset: Offset(5, 5),),
                       ],
                     ),
-                    child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),
+                    child: Image.network( accountImage, width:100, ),
+
+                    // child: Icon(Icons.person, size: 80, color: Colors.grey.shade300,),
                   ),
                   const SizedBox(height: 20,),
                   Text(accountFullname, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
@@ -295,6 +308,30 @@ class _ProfilePageState extends State<ProfilePage>{
     final uri = Uri.parse(jobListURL);
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {
+      'token' : token
+    };
+    print(json.encode(body));
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    var responseBody = response.body;
+    print(responseBody);
+    var jsonData = json.decode(responseBody);
+    var details = jsonData['details'];
+    print('dsafdasfdasffgg');
+    print(details);
+    jobDetails = details;
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ViewJobList(data : jobDetails) ),);
+  }
+
+  Future getEventList() async {
+    print('STaring potin');
+    final uri = Uri.parse(eventListURL);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
       // 'token' : token
     };
     print(json.encode(body));
@@ -311,6 +348,6 @@ class _ProfilePageState extends State<ProfilePage>{
     print('dsafdasfdasffgg');
     print(details);
     jobDetails = details;
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  ViewJobList(data : jobDetails) ),);
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ViewEvents(data : jobDetails) ),);
   }
 }

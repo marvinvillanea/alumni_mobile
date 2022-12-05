@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:spc_almuni/common/theme_helper.dart';
 
-/*import 'forgot_password_page.dart';
-
+// import 'forgot_password_page.dart';
+/*
 import 'registration_page.dart';
 import 'widgets/header_widget.dart';*/
 import 'widgets/header_widget.dart';
 import 'profile_page.dart';
 import 'forgot_password_verification_page.dart';
 import 'registration_page.dart';
+import 'forgot_password_page.dart';
 
 
 class LoginPage extends StatefulWidget{
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage>{
                                 child: TextField(
                                   autofocus: false,
                                   controller: user,
-                                  decoration: ThemeHelper().textInputDecoration('User Name', 'Enter your user name'),
+                                  decoration: ThemeHelper().textInputDecoration('Email', 'Enter your email'),
                                 ),
                                 decoration: ThemeHelper().inputBoxDecorationShaddow(),
                               ),
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage>{
                                 alignment: Alignment.topRight,
                                 child: GestureDetector(
                                   onTap: () {
-                                    // Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPasswordPage()), );
+                                    Navigator.push( context, MaterialPageRoute( builder: (context) => ForgotPasswordPage()), );
                                   },
                                   child: const Text( "Forgot your password?", style: TextStyle( color: Colors.grey, ),
                                   ),
@@ -165,7 +166,8 @@ class _LoginPageState extends State<LoginPage>{
       var accountContact = dataUsers['contact_no'];
       var accountUserID = dataUsers['user_id'].toString();
       var courseName = dataUsers['course'];
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage(jsonData["token"], accountEmail,Fullanea,accountContact,accountUserID,courseName) ));
+      var image = dataUsers['image'];
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage(jsonData["token"], accountEmail,Fullanea,accountContact,accountUserID,courseName,image) ));
     } else if(responseBody == "NOT_VERIFY") {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPasswordVerificationPage() ));
     }

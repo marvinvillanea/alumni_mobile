@@ -153,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage>{
               Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
                 leading: Icon(Icons.person_add_alt_1, size: _drawerIconSize,color: Theme.of(context).accentColor),
-                title: Text('Announcement',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                title: Text('Events',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
                 },
