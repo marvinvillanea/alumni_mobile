@@ -44,6 +44,10 @@ class _ProfilePageState extends State<ProfilePage>{
   var token ;
   var accountCourse;
 
+  //LIST JOB API
+  List<dynamic> jobDetails = [];
+  var jobListURL = 'http://192.168.254.136:80/api/getJobDetails.php';
+
   Future setDetaProfile() async {
     setState(() {
       accountEmail = widget.account_email;
@@ -147,7 +151,9 @@ class _ProfilePageState extends State<ProfilePage>{
                 title: Text('Job list', style: TextStyle(fontSize: _drawerFontSize, color: Theme.of(context).accentColor),
                 ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  ViewJobList( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd') ),);
+                  getJobDetails();
+
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ViewJobList( data : jobDetails) ));
                 },
               ),
               Divider(color: Theme.of(context).primaryColor, height: 1,),
@@ -284,4 +290,27 @@ class _ProfilePageState extends State<ProfilePage>{
     );
   }
 
+  Future getJobDetails() async {
+    print('STaring potin');
+    final uri = Uri.parse(jobListURL);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      // 'token' : token
+    };
+    print(json.encode(body));
+
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    var responseBody = response.body;
+    print(responseBody);
+    var jsonData = json.decode(responseBody);
+    var details = jsonData['details'];
+    print('dsafdasfdasffgg');
+    print(details);
+    jobDetails = details;
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  ViewJobList(data : jobDetails) ),);
+  }
 }
