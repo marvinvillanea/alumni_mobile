@@ -137,7 +137,7 @@ class _ViewEventsState extends State<ViewEvents> {
                                     children: [
                                       Icon(
                                         Icons.location_on_outlined,
-                                        color:Colors.yellow,
+                                        color:Colors.red,
                                       ),
                                       // SizedBox(width: 8),
 
@@ -154,7 +154,7 @@ class _ViewEventsState extends State<ViewEvents> {
                                     children: [
                                       Icon(
                                         Icons.access_alarm_outlined,
-                                        color:Colors.yellow,
+                                        color:Colors.red,
                                       ),
                                       // SizedBox(width: 8),
                                       Text(

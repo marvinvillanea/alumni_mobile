@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:http/io_client.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:spc_almuni/common/theme_helper.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,15 +31,19 @@ class _RegistrationPageState extends State<RegistrationPage>{
   var syList = [];
   var courseList =[];
 
-  var endpoint_sy = 'http://192.168.254.136:80/api/sy.php';
-  var endpoint_course = 'http://192.168.254.136:80/api/getcourse.php';
-  var endpoint_register = 'http://192.168.254.136:80/api/registration_user.php';
+  var endpoint_sy = 'https://spc-alumni.spc-ccs.net/api/sy.php';
+  var endpoint_course = 'https://spc-alumni.spc-ccs.net/api/getCourse.php';
+  var endpoint_register = 'https://spc-alumni.spc-ccs.net/api/registration_user.php';
 
   Future getAllSy()async{
     final uri = Uri.parse(endpoint_sy);
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {};
     // String jsonBody = json.encode(body);
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
 
     var response = await http.post(
       uri,
@@ -64,6 +70,10 @@ class _RegistrationPageState extends State<RegistrationPage>{
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {};
     // String jsonBody = json.encode(body);
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
 
     var response = await http.post(
       uri,
@@ -383,6 +393,10 @@ class _RegistrationPageState extends State<RegistrationPage>{
       'course' : course_id,
     };
     // String jsonBody = json.encode(body);
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
 
     var response = await http.post(
       uri,

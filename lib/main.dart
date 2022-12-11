@@ -1,9 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'pages/splash_screen.dart';
 
+class PostHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = new PostHttpOverrides();
   runApp(LoginUiApp());
 }
 

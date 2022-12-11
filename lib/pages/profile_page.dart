@@ -1,15 +1,19 @@
 import 'dart:convert';
+import 'package:http/io_client.dart';
+import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:http/http.dart';
 import 'package:spc_almuni/pages/splash_screen.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 
+import 'edit_profile.dart';
 import 'view_joblist.dart';
 import 'view_event.dart';
-
+import 'personal_evaluation.dart';
 class ProfilePage extends StatefulWidget{
 
   ProfilePage(this.token, this.account_email, this.account_fullname, this.account_phone_no, this.user_id,this.course, this.image);
@@ -46,8 +50,11 @@ class _ProfilePageState extends State<ProfilePage>{
   //LIST JOB API
   List<dynamic> jobDetails = [];
   List<dynamic> eventDetails = [];
-  var jobListURL = 'http://192.168.254.136:80/api/getJobDetails.php';
-  var eventListURL = 'http://192.168.254.136:80/api/getEvents.php';
+  List<dynamic> listSurveyEvaluation = [];
+  var jobListURL = 'https://spc-alumni.spc-ccs.net/api/getJobDetails.php';
+  var eventListURL = 'https://spc-alumni.spc-ccs.net/api/getEvents.php';
+  var listSurveyEvaluationURL = 'https://spc-alumni.spc-ccs.net/api/get_list_survey.php';
+
   Future setDetaProfile() async {
     setState(() {
       accountEmail = widget.account_email;
@@ -73,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage>{
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Profile Page",
+        title: const Text("Profile ",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         elevation: 0.5,
@@ -140,8 +147,8 @@ class _ProfilePageState extends State<ProfilePage>{
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.screen_lock_landscape_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
-                title: Text('Home Screen', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
+                leading: Icon(Icons.account_circle_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
+                title: Text('Home', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
                 onTap: (){
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ));
                   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
@@ -157,7 +164,21 @@ class _ProfilePageState extends State<ProfilePage>{
                   },
               ),
               ListTile(
-                leading: Icon(Icons.screen_lock_landscape_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
+                leading: Icon(Icons.manage_accounts_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
+                title: Text('Edit Profile', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
+                onTap: (){
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ));
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      EditProfile(
+                          token
+                          ) ));
+                  // launchURL();
+
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.format_list_bulleted, size: _drawerIconSize, color: Theme.of(context).accentColor,),
                 title: Text('Job list', style: TextStyle(fontSize: _drawerFontSize, color: Theme.of(context).accentColor),
                 ),
                 onTap: () {
@@ -168,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage>{
               ),
               Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
-                leading: Icon(Icons.person_add_alt_1, size: _drawerIconSize,color: Theme.of(context).accentColor),
+                leading: Icon(Icons.event_note_outlined, size: _drawerIconSize,color: Theme.of(context).accentColor),
                 title: Text('Events',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   getEventList();
@@ -177,28 +198,45 @@ class _ProfilePageState extends State<ProfilePage>{
               ),
               Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
-                leading: Icon(Icons.password_rounded, size: _drawerIconSize,color: Theme.of(context).accentColor,),
-                title: Text('Forgot Password Page',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                leading: Icon(Icons.person_add_alt_1, size: _drawerIconSize,color: Theme.of(context).accentColor),
+                title: Text('Personal Evaluation'
+                    '',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                onTap: () {
+                  getListSurveyEvaluation();
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalEvaluation(token)),);
+                },
+              ),
+              Divider(color: Theme.of(context).primaryColor, height: 1,),
+            /*  ListTile(
+                leading: Icon(Icons.logout_rounded, size: _drawerIconSize,color: Theme.of(context).accentColor,),
+                title: Text('Logout',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                onTap: () {
+                  Navigator.push( context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
+                },
+              ),*/
+              Divider(color: Theme.of(context).primaryColor, height: 1,),
+              ListTile(
+                leading: Icon(Icons.logout_rounded, size: _drawerIconSize,color: Theme.of(context).accentColor,),
+                title: Text('Logout',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   Navigator.push( context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
                 },
               ),
-              Divider(color: Theme.of(context).primaryColor, height: 1,),
-              ListTile(
+             /* ListTile(
                 leading: Icon(Icons.verified_user_sharp, size: _drawerIconSize,color: Theme.of(context).accentColor,),
                 title: Text('Verification Page',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   Navigator.push( context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")), );
                 },
-              ),
-              Divider(color: Theme.of(context).primaryColor, height: 1,),
+              ),*/
+              /*Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
                 leading: Icon(Icons.logout_rounded, size: _drawerIconSize,color: Theme.of(context).accentColor,),
                 title: Text('Logout',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   SystemNavigator.pop();
                 },
-              ),
+              ),*/
             ],
           ),
         ),
@@ -304,7 +342,7 @@ class _ProfilePageState extends State<ProfilePage>{
   }
 
   Future getJobDetails() async {
-    print('STaring potin');
+    print('STaring getJobDetails');
     final uri = Uri.parse(jobListURL);
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {
@@ -312,15 +350,19 @@ class _ProfilePageState extends State<ProfilePage>{
     };
     print(json.encode(body));
 
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
     var response = await http.post(
       uri,
       headers: headers,
       body: json.encode(body),
     );
     var responseBody = response.body;
-    print(responseBody);
     var jsonData = json.decode(responseBody);
     var details = jsonData['details'];
+    print(details);
     print('dsafdasfdasffgg');
     print(details);
     jobDetails = details;
@@ -328,14 +370,17 @@ class _ProfilePageState extends State<ProfilePage>{
   }
 
   Future getEventList() async {
-    print('STaring potin');
+    print('STaring getEventList');
     final uri = Uri.parse(eventListURL);
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {
       // 'token' : token
     };
     print(json.encode(body));
-
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
     var response = await http.post(
       uri,
       headers: headers,
@@ -350,4 +395,40 @@ class _ProfilePageState extends State<ProfilePage>{
     jobDetails = details;
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  ViewEvents(data : jobDetails) ),);
   }
+
+  Future getListSurveyEvaluation() async {
+    print('STaring getListSurveyEvaluation');
+    final uri = Uri.parse(listSurveyEvaluationURL);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      'token' : widget.token
+    };
+    // print(json.encode(body));
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+    var responseBody = response.body;
+    print(responseBody);
+    var jsonData = json.decode(responseBody);
+    var details = jsonData['details'];
+    print(details);
+    jobDetails = details;
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  PersonalEvaluation(widget.token) ),);
+  }
+  Future launchURL() async {
+    var url = 'https://spc-alumni.spc-ccs.net/api/edit_profile.php?token=' + widget.token;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+
 }
