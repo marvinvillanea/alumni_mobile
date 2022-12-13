@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/io_client.dart';
 import 'dart:io';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +16,7 @@ import 'view_event.dart';
 import 'personal_evaluation.dart';
 class ProfilePage extends StatefulWidget{
 
-  ProfilePage(this.token, this.account_email, this.account_fullname, this.account_phone_no, this.user_id,this.course, this.image);
+  ProfilePage(this.token, this.account_email, this.account_fullname, this.account_phone_no, this.user_id,this.course, this.image, this.address);
 
   final String token;
   final String account_email;
@@ -25,6 +25,7 @@ class ProfilePage extends StatefulWidget{
   final String user_id;
   final String course;
   final String image;
+  final String address;
 
 
   @override
@@ -46,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage>{
   var token ;
   var accountCourse;
   var accountImage;
+  var address;
 
   //LIST JOB API
   List<dynamic> jobDetails = [];
@@ -64,6 +66,7 @@ class _ProfilePageState extends State<ProfilePage>{
       accountUserID = widget.user_id;
       accountCourse = widget.course;
       accountImage = widget.image;
+      address = widget.address;
     });
   }
 
@@ -94,25 +97,25 @@ class _ProfilePageState extends State<ProfilePage>{
               )
           ),
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only( top: 16, right: 16,),
-            child: Stack(
-              children: <Widget>[
-                const Icon(Icons.notifications),
-                Positioned(
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(1),
-                    decoration: BoxDecoration( color: Colors.red, borderRadius: BorderRadius.circular(6),),
-                    constraints: const BoxConstraints( minWidth: 12, minHeight: 12, ),
-                    child: const Text( '5', style: TextStyle(color: Colors.white, fontSize: 8,), textAlign: TextAlign.center,),
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+        // actions: [
+        //   Container(
+        //     margin: const EdgeInsets.only( top: 16, right: 16,),
+        //     child: Stack(
+        //       children: <Widget>[
+        //         const Icon(Icons.notifications),
+        //         Positioned(
+        //           right: 0,
+        //           child: Container(
+        //             padding: const EdgeInsets.all(1),
+        //             decoration: BoxDecoration( color: Colors.red, borderRadius: BorderRadius.circular(6),),
+        //             constraints: const BoxConstraints( minWidth: 12, minHeight: 12, ),
+        //             child: const Text( '5', style: TextStyle(color: Colors.white, fontSize: 8,), textAlign: TextAlign.center,),
+        //           ),
+        //         )
+        //       ],
+        //     ),
+        //   )
+        // ],
       ),
       drawer: Drawer(
         child: Container(
@@ -160,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage>{
                               accountFullname,
                               accountConctactNo,accountUserID,
                               accountCourse,
-                              accountImage) ));
+                              accountImage, address) ));
                   },
               ),
               ListTile(
@@ -298,12 +301,12 @@ class _ProfilePageState extends State<ProfilePage>{
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        const ListTile(
+                                        ListTile(
                                           contentPadding: EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 4),
                                           leading: Icon(Icons.my_location),
                                           title: Text("Location"),
-                                          subtitle: Text("Tibanga-Saray"),
+                                          subtitle: Text(address),
                                         ),
                                         ListTile(
                                           leading: Icon(Icons.email),
@@ -421,14 +424,14 @@ class _ProfilePageState extends State<ProfilePage>{
     jobDetails = details;
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  PersonalEvaluation(widget.token) ),);
   }
-  Future launchURL() async {
-    var url = 'https://spc-alumni.spc-ccs.net/api/edit_profile.php?token=' + widget.token;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // Future launchURL() async {
+  //   var url = 'https://spc-alumni.spc-ccs.net/api/edit_profile.php?token=' + widget.token;
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
 
 }

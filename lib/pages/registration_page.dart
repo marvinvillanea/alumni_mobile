@@ -405,7 +405,7 @@ class _RegistrationPageState extends State<RegistrationPage>{
     );
     String responseBody = response.body;
     if(responseBody == "SUCCESS"){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd','fdsgfsd') ));
     } else if(responseBody == "NOT_VERIFY") {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ForgotPasswordVerificationPage() ));
     }

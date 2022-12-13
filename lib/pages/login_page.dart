@@ -172,7 +172,8 @@ class _LoginPageState extends State<LoginPage>{
         var accountUserID = dataUsers['user_id'].toString();
         var courseName = dataUsers['course'];
         var image = dataUsers['image'];
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage(jsonData["token"], accountEmail,Fullanea,accountContact,accountUserID,courseName,image) ));
+        var address = dataUsers['address'];
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage(jsonData["token"], accountEmail,Fullanea,accountContact,accountUserID,courseName,image, address) ));
       } else if(responseBody == "NOT_VERIFY") {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPasswordVerificationPage() ));
       }

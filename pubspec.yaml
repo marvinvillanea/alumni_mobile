@@ -41,7 +41,9 @@ dependencies:
   fluttertoast: ^8.0.9
   flutter_session_manager: ^1.0.3
   webview_flutter: ^3.0.3
-  url_launcher: ^6.1.7
+#  url_launcher: ^6.1.7
+#  flutter_webview_pro: ^3.0.1+4
+#  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:

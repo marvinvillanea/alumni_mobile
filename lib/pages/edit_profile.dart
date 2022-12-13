@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:spc_almuni/pages/testing.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-
 class EditProfile extends StatefulWidget{
 
   EditProfile(this.token);
@@ -23,6 +22,7 @@ class EditProfile extends StatefulWidget{
 
 
 class _EditProfileState extends State<EditProfile> {
+
   final double  _drawerIconSize = 24;
   final double _drawerFontSize = 17;
 
