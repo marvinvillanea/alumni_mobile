@@ -1,36 +1,34 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-// import 'package:spc_almuni/pages/JobDetailsPage.dart';
-import 'package:spc_almuni/pages/testing.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-// import 'package:flutter_webview_pro/platform_interface.dart';
-// import 'package:flutter_webview_pro/webview_flutter.dart';
 
-class EditProfile extends StatefulWidget{
 
-  EditProfile(this.token);
+class UpdateProfile extends StatefulWidget{
+
+  UpdateProfile(this.token);
 
   final String token;
 
 
   @override
   State<StatefulWidget> createState() {
-    return _EditProfileState();
+    return _UpdateProfileState();
   }
 }
 
 
 
-class _EditProfileState extends State<EditProfile> {
+class _UpdateProfileState extends State<UpdateProfile> {
 
   final double  _drawerIconSize = 24;
   final double _drawerFontSize = 17;
 
-
   var token ;
+
 
 
   Future setDetaProfile() async {
@@ -43,14 +41,13 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     setDetaProfile();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text("Edit Profile",
+        title:  Text("Upload Profile Image",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         elevation: 0.5,
@@ -65,10 +62,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      body: WebView(
-        initialUrl: 'https://spc-alumni.spc-ccs.net/api/edit_profile.php?token='+ token,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+
     );
   }
 

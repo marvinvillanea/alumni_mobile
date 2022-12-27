@@ -11,6 +11,7 @@ import 'package:spc_almuni/pages/splash_screen.dart';
 import 'package:spc_almuni/pages/widgets/header_widget.dart';
 
 import 'edit_profile.dart';
+import 'update_profile.dart';
 import 'view_joblist.dart';
 import 'view_event.dart';
 import 'personal_evaluation.dart';
@@ -97,25 +98,27 @@ class _ProfilePageState extends State<ProfilePage>{
               )
           ),
         ),
-        // actions: [
-        //   Container(
-        //     margin: const EdgeInsets.only( top: 16, right: 16,),
-        //     child: Stack(
-        //       children: <Widget>[
-        //         const Icon(Icons.notifications),
-        //         Positioned(
-        //           right: 0,
-        //           child: Container(
-        //             padding: const EdgeInsets.all(1),
-        //             decoration: BoxDecoration( color: Colors.red, borderRadius: BorderRadius.circular(6),),
-        //             constraints: const BoxConstraints( minWidth: 12, minHeight: 12, ),
-        //             child: const Text( '5', style: TextStyle(color: Colors.white, fontSize: 8,), textAlign: TextAlign.center,),
-        //           ),
-        //         )
-        //       ],
-        //     ),
-        //   )
-        // ],
+        actions: [
+          Container(
+            margin: const EdgeInsets.only( top: 16, right: 16,),
+            child: Stack(
+              children: <Widget>[
+                const Icon(Icons.notifications),
+                Positioned(
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration( color: Colors.red, borderRadius: BorderRadius.circular(6),),
+                    constraints: const BoxConstraints( minWidth: 12, minHeight: 12, ),
+                    child: const Text( '1', style: TextStyle(color: Colors.white, fontSize: 8,), textAlign: TextAlign.center,),
+                  ),
+
+                )
+              ],
+            ),
+
+          )
+        ],
       ),
       drawer: Drawer(
         child: Container(
@@ -168,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage>{
               ),
               ListTile(
                 leading: Icon(Icons.manage_accounts_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
-                title: Text('Edit Profile', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
+                title: Text('Edit Information', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
                 onTap: (){
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ));
                   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
@@ -176,6 +179,20 @@ class _ProfilePageState extends State<ProfilePage>{
                       EditProfile(
                           token
                           ) ));
+                  // launchURL();
+
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.manage_accounts_rounded, size: _drawerIconSize, color: Theme.of(context).accentColor,),
+                title: Text('Upload Profile', style: TextStyle(fontSize: 17, color: Theme.of(context).accentColor),),
+                onTap: (){
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen") ));
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage( 'dasfdaf', 'fdsgfsd','fdsgfsd','fdsgfsd','fdsgfsd', 'fdsgfsd','fdsgfsd') ));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      UpdateProfile(
+                          token
+                      ) ));
                   // launchURL();
 
                 },
@@ -193,7 +210,7 @@ class _ProfilePageState extends State<ProfilePage>{
               Divider(color: Theme.of(context).primaryColor, height: 1,),
               ListTile(
                 leading: Icon(Icons.event_note_outlined, size: _drawerIconSize,color: Theme.of(context).accentColor),
-                title: Text('Events',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
+                title: Text('Announcement',style: TextStyle(fontSize: _drawerFontSize,color: Theme.of(context).accentColor),),
                 onTap: () {
                   getEventList();
                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const SplashScreen(title: "Splash Screen")),);
